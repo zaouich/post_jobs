@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
             message:"can only be director or researcher"
         }
     }
-    ,resume:{
+    , resume:{
         type:String,
         required : [function(){
             return this.role==="researcher"

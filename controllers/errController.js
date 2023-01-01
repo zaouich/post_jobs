@@ -3,9 +3,11 @@ const AppError = require("../utils/AppError")
 // deve handler 
 const deveHandller = (err,req,res)=>{
     res.status(err.statusCode || 500).json({
+        err,
         status : 'faild',
         message : err.message,
-        operational : err.isOperational
+        operational : err.isOperational,
+        stack:err.stack
     })
 }
 // ValidationError handler
