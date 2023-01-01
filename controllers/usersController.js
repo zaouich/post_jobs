@@ -90,7 +90,7 @@ const login = async(req,res,next)=>{
     // 2) check if there is an user with the email  and check if the password are true
     const user = await User.findOne({email})
     if(!user || ! user.isCorrectPassword(password,user.password)) return next(new AppError(401,"please enter a valid email and password"))
-    // 3) give the user and json web token to access to the app / then send the response
+    // 3) give the user the json web token to access to the app / then send the response
     passport(user,res)
 }
 module.exports = {signUp,upload,modifyImage,login}
