@@ -56,5 +56,9 @@ userSchema.pre("save",async function(next){
     this.password =await bcrypt.hash(this.password,12)
     this.confirmPassword = undefined
 })
+
+userSchema.methods.isCorrectPassword=function(condidatPassword,password){
+    return bcrypt.compare(condidatPassword,password)
+}
 const User = mongoose.model("User",userSchema)
 module.exports = User
