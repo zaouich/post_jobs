@@ -21,6 +21,9 @@ const DuplicateKey=(err)=>{
     const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
     return new AppError(400,`duplicate value is : ${value}`)
 }
+const JsonWebTokenError =(err)=>{
+    return new AppError(401,"json web token error / please login first")
+}
 // product handler
 const prodHandller = (err,req,res)=>{
     if(err.isOperational) return res.status(err.statusCode).json({
@@ -37,6 +40,7 @@ const errController = (err,req,res,next)=>{
     }
     if(err.name==="ValidationError") err= ValidationError(err)
     else if(err.code=="11000") err= DuplicateKey(err)
+    else if(err.name==="JsonWebTokenError") err = JsonWebTokenError(err)
     prodHandller(err,req,res) 
 }
 module.exports = errController

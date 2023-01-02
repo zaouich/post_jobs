@@ -56,9 +56,14 @@ userSchema.pre("save",async function(next){
     this.password =await bcrypt.hash(this.password,12)
     this.confirmPassword = undefined
 })
-
+// check if the password is true
 userSchema.methods.isCorrectPassword=function(condidatPassword,password){
     return bcrypt.compare(condidatPassword,password)
+}
+// check if the user doesnt change the password after generating the jwt
+userSchema.methods.isChanged = function(JWTCreated){
+    if(!this.changedAt) return false
+    return this.changedAt.getTime()/1000 < JWTCreated
 }
 const User = mongoose.model("User",userSchema)
 module.exports = User
