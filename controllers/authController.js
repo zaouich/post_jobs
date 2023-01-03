@@ -70,7 +70,7 @@ const resetPassword = catchAsync(async(req,res,next)=>{
    user.expireResetToken= undefined
    user.resetToken = undefined
    await user.save()
-   res.send("password changed")
+   res.send("password have been changed")
 
 })
 module.exports = {checkLogin,forgotPassword,resetPassword}
