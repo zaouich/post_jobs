@@ -51,7 +51,7 @@ const forgotPassword = async(req,res,next)=>{
     })
     // send res
     res.status(200).json({
-        message : "an email sent to you "
+        message : "an email sent to you !"
     })
 }
 // resetPassword
