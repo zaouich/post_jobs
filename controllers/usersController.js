@@ -89,7 +89,7 @@ const login = async(req,res,next)=>{
     if(!email ||!password) return next(new AppError(401,"please enter your email and password"))
     // 2) check if there is an user with the email  and check if the password are true
     const user = await User.findOne({email})
-    if(!user || ! user.isCorrectPassword(password,user.password)) return next(new AppError(401,"please enter a valid email and password"))
+    if(!user || !await user.isCorrectPassword(password,user.password)) return next(new AppError(401,"please enter a valid email and password"))
     // 3) give the user the json web token to access to the app / then send the response
     passport(user,res)
 }

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose")
 const validator = require("validator")
 const bcrypt = require("bcrypt")
+const crypto = require("crypto")
 const userSchema = new mongoose.Schema({
     first_name :{
         type : String,
@@ -48,22 +49,39 @@ const userSchema = new mongoose.Schema({
         default:true
     },changedAt:{
         type:Date
+    },resetToken:{
+        type:String
+    },expireResetToken : {
+        type : String
     }
 })
 
 userSchema.pre("save",async function(next){
-    if(! this.isNew) return next()
+    /* if(! this.isNew) return next() */
     this.password =await bcrypt.hash(this.password,12)
     this.confirmPassword = undefined
+    next()
 })
 // check if the password is true
-userSchema.methods.isCorrectPassword=function(condidatPassword,password){
-    return bcrypt.compare(condidatPassword,password)
+userSchema.methods.isCorrectPassword=async function (condidatPassword,password){
+    return  await  bcrypt.compare(condidatPassword,password)
 }
 // check if the user doesnt change the password after generating the jwt
 userSchema.methods.isChanged = function(JWTCreated){
     if(!this.changedAt) return false
     return this.changedAt.getTime()/1000 < JWTCreated
+}
+// create an reset token
+userSchema.methods.resetPassword = function(){
+    // create a random string
+    const token = crypto.randomBytes(12).toString("hex")
+    // add crypted string to the document
+    this.resetToken = crypto.createHash("sha256").update(token).digest("hex")
+    // add exipre time 
+    this.expireResetToken =  Date.now()+10*60*60*1000
+    // send in the email
+    return token
+
 }
 const User = mongoose.model("User",userSchema)
 module.exports = User
